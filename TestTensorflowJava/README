@@ -1,0 +1,6 @@
+
+
+Eclipse :
+	Run configuration
+		(x)=Arguments > VM Arguments : -Djava.library.path=./jni
+		Environement : TF_CPP_MIN_LOG_LEVEL=2
