@@ -1,3 +1,4 @@
+
 /* Copyright 2016 The TensorFlow Authors. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,7 +10,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-
+/*
+ *https://github.com/tensorflow/tensorflow/tree/master/tensorflow/java/src/test/java/org/tensorflow 
+ */
 package org.tensorflow.test;
 
 import static org.junit.Assert.assertEquals;

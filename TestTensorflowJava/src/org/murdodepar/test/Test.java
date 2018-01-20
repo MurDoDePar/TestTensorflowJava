@@ -10,10 +10,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package com.domelis.test;
+package org.murdodepar.test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -34,15 +35,30 @@ public class Test {
 		}
 		if(!Files.exists(Paths.get(args[0]))){
 			System.out.println("Pas de graph");
-			try (Graph g = new Graph(); Session s = new Session(g)) {
-				/*
-				 Placeholder, Const, Abort, RandomUniform, MaxPool, FractionalMaxPool
-				 */
-			Output<OperationBuilder> x = g.opBuilder("Placeholder", "x").setAttr("dtype", DataType.FLOAT).build().output(0);
-			Output<OperationBuilder> y = g.opBuilder("Placeholder", "y").setAttr("dtype", DataType.FLOAT).build().output(0);
-			SavedModelBundle load = SavedModelBundle.load(args[0], "serve");
-			Session sess = load.session();
-			load.close();
+			try (GraphUtil gu = new GraphUtil();) {
+				//# Batch of input and target output (1x1 matrices)
+				//x = tf.placeholder(tf.float32, shape=[None, 1, 1], name='input')
+				Output<OperationBuilder> x = gu.setPlaceholder("input", DataType.FLOAT);
+				//y = tf.placeholder(tf.float32, shape=[None, 1, 1], name='target')
+				Output<OperationBuilder> y = gu.setPlaceholder("target", DataType.FLOAT);
+				//# Trivial linear model
+				//y_ = tf.identity(tf.layers.dense(x, 1), name='output')
+				Output<OperationBuilder> y_ = gu.identity(x, "output");
+				//# Optimize loss
+				//loss = tf.reduce_mean(tf.square(y_ - y), name='loss')
+				Output<OperationBuilder> sq = gu.square(gu.setSub("sub", y_, y), "loss");
+				Output<OperationBuilder> loss = gu.reduceMean("loss",sq);
+			//optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
+			//train_op = optimizer.minimize(loss, name='train')
+
+			//init = tf.global_variables_initializer()
+
+				//# tf.train.Saver.__init__ adds operations to the graph to save
+				//# and restore variables.
+				//saver_def = tf.train.Saver().as_saver_def()
+				gu.saveGraphDef(args[0]);
+		    
+				gu.loadGraphDef(args[0]);
 			}
 			return;
 		}
