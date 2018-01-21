@@ -27,14 +27,14 @@ import org.tensorflow.Tensor;
 import org.tensorflow.Tensors;
 import org.tensorflow.SavedModelBundle;
 
-public class Test {
+public class PremierTF {
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
 			System.err.println("Require two arguments: <graph_def_filename> <directory_for_checkpoints>");
 			System.exit(1);
 		}
 		if(!Files.exists(Paths.get(args[0]))){
-			System.out.println("Pas de graph");
+			System.out.println("Création du graph");
 			try (GraphUtil gu = new GraphUtil();) {
 				//# Batch of input and target output (1x1 matrices)
 				//x = tf.placeholder(tf.float32, shape=[None, 1, 1], name='input')
@@ -43,10 +43,10 @@ public class Test {
 				Output<OperationBuilder> y = gu.setPlaceholder("target", DataType.FLOAT);
 				//# Trivial linear model
 				//y_ = tf.identity(tf.layers.dense(x, 1), name='output')
-				Output<OperationBuilder> y_ = gu.identity(x, "output");
+				Output<OperationBuilder> y_ = gu.identity(gu.layers_dense("dense",x), "output");
 				//# Optimize loss
 				//loss = tf.reduce_mean(tf.square(y_ - y), name='loss')
-				Output<OperationBuilder> sq = gu.square(gu.setSub("sub", y_, y), "loss");
+				Output<OperationBuilder> sq = gu.setSquare("loss" ,gu.setSub("sub", y_, y));
 				Output<OperationBuilder> loss = gu.reduceMean("loss",sq);
 			//optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
 			//train_op = optimizer.minimize(loss, name='train')

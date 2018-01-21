@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package org.murdodepar.test;
+package org.tensorflow.examples;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Graph;
@@ -21,7 +21,9 @@ import org.tensorflow.OperationBuilder;
 import org.tensorflow.Output;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
-
+/*
+ * https://github.com/tensorflow/tensorflow/issues/6781
+ */
 public class Example {
 	public static void main(String[] args) {
 		try (Graph g = new Graph(); Session s = new Session(g)) {
