@@ -1,4 +1,4 @@
-package org.tensorflow.test;
+package org.tensorflow.examples;
 
 import org.tensorflow.DataType;
 import org.tensorflow.Graph;

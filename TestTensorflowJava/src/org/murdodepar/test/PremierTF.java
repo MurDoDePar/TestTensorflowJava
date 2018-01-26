@@ -48,6 +48,7 @@ public class PremierTF {
 				//loss = tf.reduce_mean(tf.square(y_ - y), name='loss')
 				Output<OperationBuilder> sq = gu.setSquare("loss" ,gu.setSub("sub", y_, y));
 				Output<OperationBuilder> loss = gu.reduceMean("loss",sq);
+				//https://stackoverflow.com/questions/48372361/model-optimizer-tansorflow-in-java
 			//optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
 			//train_op = optimizer.minimize(loss, name='train')
 

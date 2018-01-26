@@ -4,3 +4,23 @@ Eclipse :
 	Run configuration
 		(x)=Arguments > VM Arguments : -Djava.library.path=./jni
 		Environement : TF_CPP_MIN_LOG_LEVEL=2
+		
+http://blog.nitishmutha.com/tensorflow/2017/01/22/TensorFlow-with-gpu-for-windows.html
+		CUDA_PATH
+		C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64\cudnn.lib
+		C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\extras\CUPTI\libx64
+
+
+python -m pip install --upgrade pip
+
+pip3 search tensorflow
+tensorflow (1.5.0rc1)                        - TensorFlow helps the tensors
+                                               flow
+pip3 search tensorflow-gpu
+
+tensorflow-gpu (1.5.0rc1)                    - TensorFlow helps the tensors
+                                               flow
+
+pip3 install --upgrade tensorflow
+pip3 install --upgrade tensorflow-gpu
+

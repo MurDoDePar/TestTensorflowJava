@@ -295,6 +295,9 @@ allowed=[DT_HALF, DT_FLOAT, DT_DOUBLE, DT_UINT8, DT_INT8, DT_INT16, DT_INT32, DT
 		return g.opBuilder("Identity", name).setAttr("value", t)
 				.build().output(0);
 	}
+	/*
+	 * https://github.com/tensorflow/tensorflow/issues/8280
+	 */
 	public Output reduceMean(String name, Output input) {
 	    try (Tensor t = Tensor.create(new int[] {0})) {
 	        Output reductionIndices = g.opBuilder("Const", "ReductionIndices")
@@ -303,6 +306,18 @@ allowed=[DT_HALF, DT_FLOAT, DT_DOUBLE, DT_UINT8, DT_INT8, DT_INT16, DT_INT32, DT
 	        Output ret = g.opBuilder("Mean", name).setAttr("T", DataType.FLOAT)
 	            .setAttr("Tidx", DataType.INT32)
 	            .addInput(input).addInput(reductionIndices)
+	            .build().output(0);
+	        return ret;
+	      }
+	}
+	public Output GradientDescentOptimizer(String name, Float learning_rate) {
+	    try (Tensor t = Tensor.create(learning_rate)) {
+	        Output lr = g.opBuilder("Const", "learning_rate")
+	                .setAttr("dtype", t.dataType()).setAttr("value", t)
+	                .build().output(0);
+	        Output ret = g.opBuilder("GradientDescentOptimizer", name)
+	        	.setAttr("LR", DataType.FLOAT)
+	            .addInput(lr)
 	            .build().output(0);
 	        return ret;
 	      }
