@@ -13,6 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 #https://gist.github.com/mrry/ee5dbcfdd045fa48a27d56664411d41c
+#tensorflow_self_check.py
 """A script for testing that TensorFlow is installed correctly on Windows.
 The script will attempt to verify your TensorFlow installation, and print
 suggestions for how to fix your installation.
