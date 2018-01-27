@@ -23,12 +23,13 @@ import imp
 import sys
 
 def main():
-  candidate_explanation = False
+  candidate_explanation = "ERROR Liste"
 
   python_version = sys.version_info.major, sys.version_info.minor
   print("- Python version is %d.%d." % python_version)
   if not (python_version == (3, 5) or python_version == (3, 6)):
-    candidate_explanation = True
+    candidate_explanation = candidate_explanation+""" 
+    - The official distribution of TensorFlow for Windows requires Python version 3.5 or 3.6."""
     print("- The official distribution of TensorFlow for Windows requires "
           "Python version 3.5 or 3.6.")
   
@@ -36,7 +37,9 @@ def main():
     _, pathname, _ = imp.find_module("tensorflow")
     print("- TensorFlow is installed at: %s" % pathname)
   except ImportError:
-    candidate_explanation = True
+    candidate_explanation = candidate_explanation+"""
+    - No module named TensorFlow is installed in this Python environment. You may
+  install it using the command `pip install tensorflow`."""
     print("""- No module named TensorFlow is installed in this Python environment. You may
   install it using the command `pip install tensorflow`.""")
 
@@ -49,75 +52,97 @@ def main():
       print("The installed version of TensorFlow does not include GPU support.")
     sys.exit(0)
   except ImportError:
-    candidate_explanation = True
-    print("""
-ERROR: Failed to import the TensorFlow module.""")
+    candidate_explanation = candidate_explanation+"""
+    - Failed to import the TensorFlow module."""
+    print("""*** Failed to import the TensorFlow module.""")
 
   try:
     msvcp140 = ctypes.WinDLL("msvcp140.dll")
+    print("- Find msvcp140.dll")
   except OSError:
-    candidate_explanation = True
+    candidate_explanation = candidate_explanation+"""
+    - Could not load 'msvcp140.dll'."""
     print("""- Could not load 'msvcp140.dll'. TensorFlow requires that this DLL be
   installed in a directory that is named in your %PATH% environment
   variable. You may install this DLL by downloading Microsoft Visual
   C++ 2015 Redistributable Update 3 from this URL:
   https://www.microsoft.com/en-us/download/details.aspx?id=53587""")
 
+  cudart8_found = False
+  candidate_explanation_found = ""
+  try:
+    cudart64_80 = ctypes.WinDLL("cudart64_80.dll")
+    print("- Find cudart64_80.dll")
+    cudart8_found = True
+  except OSError:
+    candidate_explanation_found = candidate_explanation_found+"""
+    - Could not load 'cudart64_80.dll'."""
+
+  cudart9_found = False
   try:
     cudart64_91 = ctypes.WinDLL("cudart64_91.dll")
+    print("- Find cudart64_91.dll")
+    cudart9_found = True
   except OSError:
-    candidate_explanation = True
-    print("""- Could not load 'cudart64_91.dll'. The GPU version of TensorFlow
+    candidate_explanation_found = candidate_explanation_found+"""
+    - Could not load 'cudart64_91.dll'."""
+
+  if not cudart8_found and not cudart9_found:
+    candidate_explanation = candidate_explanation+candidate_explanation_found
+    candidate_explanation = candidate_explanation+"""
+    - Could not find cudart64_XX.dll ."""
+    print("- Could not find cudart64_XX.dll .")
+    print("""- Could not load 'cudart64_XX.dll'. The GPU version of TensorFlow
   requires that this DLL be installed in a directory that is named in
   your %PATH% environment variable. Download and install CUDA 8.0 from
   this URL: https://developer.nvidia.com/cuda-toolkit""")
 
   try:
     nvcuda = ctypes.WinDLL("nvcuda.dll")
+    print("- Find nvcuda.dll")
   except OSError:
-    candidate_explanation = True
+    candidate_explanation = candidate_explanation+"""
+    - Could not load 'nvcuda.dll'."""
     print("""- Could not load 'nvcuda.dll'. The GPU version of TensorFlow requires that
   this DLL be installed in a directory that is named in your %PATH%
   environment variable. Typically it is installed in 'C:\Windows\System32'.
   If it is not present, ensure that you have a CUDA-capable GPU with the
   correct driver installed.""")
     
-  cudnn_found = False
   cudnn5_found = False
+  candidate_explanation_found=""
   try:
     cudnn5 = ctypes.WinDLL("cudnn64_5.dll")
+    print("- Find cuDNN 5.1 : cudnn64_5.dll")
     cudnn5_found = True
   except OSError:
-    cudnn_found = True
+    candidate_explanation_found = candidate_explanation_found+"""
+    - Could not load 'cudnn64_5.dll'."""
 
   cudnn6_found = False
   try:
     cudnn = ctypes.WinDLL("cudnn64_6.dll")
+    print("- Find cuDNN 6 : cudnn64_6.dll")
     cudnn6_found = True
   except OSError:
-    cudnn_found = True
+    candidate_explanation_found = candidate_explanation_found+"""
+    - Could not load 'cudnn64_6.dll'."""
 
   cudnn7_found = False
   try:
     cudnn = ctypes.WinDLL("cudnn64_7.dll")
+    print("- Find cuDNN 7 cudnn64_7.dll.")
     cudnn7_found = True
   except OSError:
-    cudnn_found = True
+    candidate_explanation_found = candidate_explanation_found+"""
+    - Could not load 'cudnn64_7.dll'."""
 
-  if cudnn_found:
-    print()
-    if not cudnn5_found and not cudnn6_found and not cudnn7_found:
-      candidate_explanation = True
-      print("- Could not find cuDNN.")
-    elif cudnn5_found and not cudnn6_found and not cudnn7_found:
-      print("- Find cuDNN 5.1")
-    elif not cudnn5_found and cudnn6_found and not cudnn7_found:
-      print("- Find cuDNN 6.")
-    elif not cudnn5_found and not cudnn6_found and cudnn7_found:
-      print("- Find cuDNN 7.")
-    else:
-      print("- Could not find cuDNN .")
-      print("""  The GPU version of TensorFlow requires that the correct cuDNN DLL be installed
+  if not cudnn5_found and not cudnn6_found and not cudnn7_found:
+    candidate_explanation = candidate_explanation+candidate_explanation_found
+    candidate_explanation = candidate_explanation+"""
+    - Could not find cuDNN ."""
+    print("- Could not find cuDNN .")
+    print("""  The GPU version of TensorFlow requires that the correct cuDNN DLL be installed
   in a directory that is named in your %PATH% environment variable. Note that
   installing cuDNN is a separate step from installing CUDA, and it is often
   found in a different directory from the CUDA DLLs. The correct version of
@@ -129,12 +154,12 @@ ERROR: Failed to import the TensorFlow module.""")
   You may install the necessary DLL by downloading cuDNN from this URL:
   https://developer.nvidia.com/cudnn""")
     
-  if not candidate_explanation:
+  if candidate_explanation == "ERROR Liste":
     print("""- All required DLLs appear to be present. Please open an issue on the
   TensorFlow GitHub page: https://github.com/tensorflow/tensorflow/issues""")
   else:
      print("""
-ERROR.""")
+*** """ + candidate_explanation)
 
   sys.exit(-1)
 
