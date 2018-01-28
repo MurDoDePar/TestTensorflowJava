@@ -14,18 +14,23 @@ http://blog.nitishmutha.com/tensorflow/2017/01/22/TensorFlow-with-gpu-for-window
 python -m pip install --upgrade pip
 
 pip3 search tensorflow
-tensorflow (1.5.0rc1)                        - TensorFlow helps the tensors
+tensorflow (1.5.0)                           - TensorFlow helps the tensors
                                                flow
-pip3 search tensorflow-gpu
-tensorflow-gpu (1.5.0rc1)                    - TensorFlow helps the tensors
+  INSTALLED: 1.5.0 (latest)
+  
+tensorflow-gpu (1.5.0)                       - TensorFlow helps the tensors
                                                flow
-
+  INSTALLED: 1.5.0 (latest)
+  
+In the Start Search box, type cmd, and then press CTRL+SHIFT+ENTER.
 pip3 install --upgrade tensorflow
 pip3 install --upgrade tensorflow-gpu
 pip3 install --ignore-installed --upgrade tensorflow
 pip3 install --ignore-installed --upgrade tensorflow-gpu
+python -m pip install mitmproxy
+pip install Django
+python -m pip install
 
 python -c "import tensorflow as tf; print(tf.GIT_VERSION, tf.VERSION)"
-
 
 C:\Users\domin\AppData\Local\Programs\Python\Python36\Lib\site-packages\tensorflow\python\platform\build_info.py

@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+# mrry/tensorflow_self_check.py
 #https://gist.github.com/mrry/ee5dbcfdd045fa48a27d56664411d41c
+
 #tensorflow_self_check.py
 """A script for testing that TensorFlow is installed correctly on Windows.
 The script will attempt to verify your TensorFlow installation, and print
@@ -34,6 +36,26 @@ def main():
     print("- The official distribution of TensorFlow for Windows requires "
           "Python version 3.5 or 3.6.")
   
+  mname = "C:\\Users\\domin\\AppData\\Local\\Programs\\Python\\Python36\\Lib\\site-packages\\tensorflow\python\\_pywrap_tensorflow_internal"
+  #print(mname)
+  #mname = "tensorflow.python._pywrap_tensorflow_internal"
+  try:
+    _, pathname, _ = imp.find_module(mname)
+    print("- _pywrap_tensorflow_internal is installed at: %s" % pathname)
+  except ImportError:
+    candidate_explanation = candidate_explanation+"""
+    - No module find _pywrap_tensorflow_internal is installed in this Python environment. """
+    print("""*** No module find _pywrap_tensorflow_internal is installed in this Python environment.""")
+
+  try:
+    import importlib
+    _, pathname, _ = importlib.import_module(mname)
+    print("_pywrap_tensorflow_internal successfully installed at: %s" % pathname)
+  except ImportError:
+    candidate_explanation = candidate_explanation+"""
+    - No module named _pywrap_tensorflow_internal is installed in this Python environment."""
+    print("""*** No module named _pywrap_tensorflow_internal is installed in this Python environment.""")
+        
   try:
     _, pathname, _ = imp.find_module("tensorflow")
     print("- TensorFlow is installed at: %s" % pathname)
@@ -51,7 +73,7 @@ def main():
       print("The installed version of TensorFlow includes GPU support.")
     else:
       print("The installed version of TensorFlow does not include GPU support.")
-    sys.exit(0)
+    #sys.exit(0)
   except ImportError:
     candidate_explanation = candidate_explanation+"""
     - Failed to import the TensorFlow module."""
@@ -79,16 +101,25 @@ def main():
     candidate_explanation_found = candidate_explanation_found+"""
     - Could not load 'cudart64_80.dll'."""
 
-  cudart9_found = False
+  cudart90_found = False
+  try:
+    cudart64_90 = ctypes.WinDLL("cudart64_90.dll")
+    print("- Find cudart64_90.dll")
+    cudart91_found = True
+  except OSError:
+    candidate_explanation_found = candidate_explanation_found+"""
+    - Could not load 'cudart64_90.dll'."""
+
+  cudart91_found = False
   try:
     cudart64_91 = ctypes.WinDLL("cudart64_91.dll")
     print("- Find cudart64_91.dll")
-    cudart9_found = True
+    cudart91_found = True
   except OSError:
     candidate_explanation_found = candidate_explanation_found+"""
     - Could not load 'cudart64_91.dll'."""
 
-  if not cudart8_found and not cudart9_found:
+  if not cudart8_found and not cudart90_found and not cudart91_found:
     candidate_explanation = candidate_explanation+candidate_explanation_found
     candidate_explanation = candidate_explanation+"""
     - Could not find cudart64_XX.dll ."""

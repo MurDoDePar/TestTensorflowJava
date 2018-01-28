@@ -25,6 +25,8 @@ print('Feed this tensor to set the checkpoint filename: ', saver_def.filename_te
 print('Run this operation to save a checkpoint        : ', saver_def.save_tensor_name)
 print('Run this operation to restore a checkpoint     : ', saver_def.restore_op_name)
 
+with tf.Session() as sess:
+    tf.train.write_graph(sess.graph_def,'/graph/','graph2.pb',False)
 # Write the graph out to a file.
-with open('graph2.pb', 'w') as f:
-  f.write(tf.get_default_graph().as_graph_def().SerializeToString())
+#with open('graph2.pb', 'w') as f:
+#  f.write(tf.get_default_graph().as_graph_def().SerializeToString())
