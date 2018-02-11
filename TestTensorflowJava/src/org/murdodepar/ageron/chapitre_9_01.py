@@ -1,12 +1,17 @@
 # To support both python 2 and python 3
 from __future__ import division, print_function, unicode_literals
 
-# Common importss
+# Common imports
 import numpy as np
 import os
+import matplotlib
+import tensorflow as tf
 
 # to make this notebook's output stable across runs
-np.random.seed(42)
+def reset_graph(seed=42):
+    tf.reset_default_graph()
+    tf.set_random_seed(seed)
+    np.random.seed(seed)
 
 # To plot pretty figures
 #%matplotlib inline
@@ -18,12 +23,11 @@ plt.rcParams['ytick.labelsize'] = 12
 
 # Where to save the figures
 PROJECT_ROOT_DIR = "."
-CHAPTER_ID = "end_to_end_project"
-IMAGES_PATH = os.path.join(PROJECT_ROOT_DIR, "images", CHAPTER_ID)
+CHAPTER_ID = "tensorflow"
 
-def save_fig(fig_id, tight_layout=True, fig_extension="png", resolution=300):
-    path = os.path.join(IMAGES_PATH, fig_id + "." + fig_extension)
+def save_fig(fig_id, tight_layout=True):
+    path = os.path.join(PROJECT_ROOT_DIR, "images", CHAPTER_ID, fig_id + ".png")
     print("Saving figure", fig_id)
     if tight_layout:
         plt.tight_layout()
-    plt.savefig(path, format=fig_extension, dpi=resolution)
+    plt.savefig(path, format='png', dpi=300)

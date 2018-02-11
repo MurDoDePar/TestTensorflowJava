@@ -32,3 +32,12 @@ test_set.head()
 
 ch.housing["median_income"].hist()
 print(ch.housing["median_income"].hist())
+
+# Divide by 1.5 to limit the number of income categories
+ch.housing["income_cat"] = np.ceil(ch.housing["median_income"] / 1.5)
+# Label those above 5 as 5
+ch.housing["income_cat"].where(ch.housing["income_cat"] < 5, 5.0, inplace=True)
+
+ch.housing["income_cat"].value_counts()
+
+ch.housing["income_cat"].hist()
