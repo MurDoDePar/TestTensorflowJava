@@ -61,9 +61,9 @@ show_graph(tf.get_default_graph())
 ch.reset_graph()
 
 from datetime import datetime
-
 now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-root_logdir = "tf_logs"
+#root_logdir = "tf_logs"
+root_logdir = "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/tf_logs"
 logdir = "{}/run-{}/".format(root_logdir, now)
 
 n_epochs = 1000
@@ -110,7 +110,7 @@ print("Name scopes")
 ch.reset_graph()
 
 now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-root_logdir = "tf_logs"
+root_logdir = "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/tf_logs"
 logdir = "{}/run-{}/".format(root_logdir, now)
 
 n_epochs = 1000
@@ -160,4 +160,37 @@ print(error.op.name)
 
 print(mse.op.name)
 
+ch.reset_graph()
 
+a1 = tf.Variable(0, name="a")      # name == "a"
+a2 = tf.Variable(0, name="a")      # name == "a_1"
+
+with tf.name_scope("param"):       # name == "param"
+    a3 = tf.Variable(0, name="a")  # name == "param/a"
+
+with tf.name_scope("param"):       # name == "param_1"
+    a4 = tf.Variable(0, name="a")  # name == "param_1/a"
+
+for node in (a1, a2, a3, a4):
+    print(node.op.name)
+
+
+print("Modularity")
+
+ch.reset_graph()
+
+n_features = 3
+X = tf.placeholder(tf.float32, shape=(None, n_features), name="X")
+
+w1 = tf.Variable(tf.random_normal((n_features, 1)), name="weights1")
+w2 = tf.Variable(tf.random_normal((n_features, 1)), name="weights2")
+b1 = tf.Variable(0.0, name="bias1")
+b2 = tf.Variable(0.0, name="bias2")
+
+z1 = tf.add(tf.matmul(X, w1), b1, name="z1")
+z2 = tf.add(tf.matmul(X, w2), b2, name="z2")
+
+relu1 = tf.maximum(z1, 0., name="relu1")
+relu2 = tf.maximum(z1, 0., name="relu2")  # Oops, cut&paste error! Did you spot it?
+
+output = tf.add(relu1, relu2, name="output")

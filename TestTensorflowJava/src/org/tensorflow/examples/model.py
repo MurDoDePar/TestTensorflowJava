@@ -1,4 +1,3 @@
-
 import tensorflow as tf
 
 # Batch of input and target output (1x1 matrices)
@@ -26,5 +25,5 @@ print('Run this operation to save a checkpoint        : ', saver_def.save_tensor
 print('Run this operation to restore a checkpoint     : ', saver_def.restore_op_name)
 
 # Write the graph out to a file.
-with open('graph.pb', 'w') as f:
+with open('./tmp/graph.pb', 'w') as f:
   f.write(tf.get_default_graph().as_graph_def().SerializeToString())

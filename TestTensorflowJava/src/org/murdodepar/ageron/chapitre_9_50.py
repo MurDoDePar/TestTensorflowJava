@@ -36,17 +36,17 @@ with tf.Session() as sess:
     for epoch in range(n_epochs):
         if epoch % 100 == 0:
             print("Epoch", epoch, "MSE =", mse.eval())                                # not shown
-            save_path = saver.save(sess, "./model/model_ch_9_50.ckpt")
+            save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_ch_9_50.ckpt")
         sess.run(training_op)
     
     best_theta = theta.eval()
-    save_path = saver.save(sess, "./model/model_ch_9_50_final.ckpt")
+    save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_ch_9_50_final.ckpt")
 
 print("best_theta")
 print(best_theta)
 
 with tf.Session() as sess:
-    saver.restore(sess, "./model/model_ch_9_50_final.ckpt")
+    saver.restore(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_ch_9_50_final.ckpt")
     best_theta_restored = theta.eval() # not shown in the book
 
 np.allclose(best_theta, best_theta_restored)
@@ -58,11 +58,11 @@ saver = tf.train.Saver({"weights": theta})
 ch.reset_graph()
 # notice that we start with an empty graph.
 
-saver = tf.train.import_meta_graph("./model/model_ch_9_50_final.ckpt.meta")  # this loads the graph structure
+saver = tf.train.import_meta_graph("C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_ch_9_50_final.ckpt.meta")  # this loads the graph structure
 theta = tf.get_default_graph().get_tensor_by_name("theta:0") # not shown in the book
 
 with tf.Session() as sess:
-    saver.restore(sess, "./model/model_ch_9_50_final.ckpt")  # this restores the graph's state
+    saver.restore(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_ch_9_50_final.ckpt")  # this restores the graph's state
     best_theta_restored = theta.eval() # not shown in the book
 
 np.allclose(best_theta, best_theta_restored)
