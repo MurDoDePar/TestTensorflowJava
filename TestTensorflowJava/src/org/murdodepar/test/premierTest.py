@@ -52,7 +52,7 @@ with tf.Session() as sess:
     
     for epoch in range(n_epochs):
         #print("epoch ", epoch)
-        x_train = np.random.rand(2,1)
+        x_train = np.random.rand(1,1)
         y_train = x_train * 2 + 3
         summary_str = mse_summary.eval(feed_dict={x: x_train, y: y_train})
         file_writer.add_summary(summary_str, epoch)
@@ -69,12 +69,18 @@ with tf.Session() as sess:
     save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM_final.ckpt")
     print("error ", error)
     #print("theta ", theta.eval())
+    x_test = np.array([[2.1]])
+    print("x_test ", x_test, "y_pred ",y_pred.eval(feed_dict={x: x_test}))
 
 file_writer.flush()
 file_writer.close()
 
+print("TEST")
 with tf.Session() as sess:
     saver.restore(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM_final.ckpt")
+    x_test = np.array([[3.1]])
+    print("x_test ", x_test," y_pred ",y_pred.eval(feed_dict={x: x_test}))
+
 
 sess.close()
 
