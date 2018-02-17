@@ -14,12 +14,18 @@ logdir = "{}/DoM-{}/".format(root_logdir, now)
 x = tf.placeholder(tf.float32, shape=[None, 1], name='x')
 y = tf.placeholder(tf.float32, shape=[None, 1], name='y')
 
+
+#theta = tf.Variable(tf.random_uniform([1, 1], -1.0, 1.0, seed=42), name="theta")
+#y_pred = tf.matmul(x, theta, name="predictions")
+#error = y_pred - y
+#mse = tf.reduce_mean(tf.square(error), name="mse")
+
+
 # Trivial linear model
 y_pred = tf.identity(tf.layers.dense(x, 1), name='predictions')
-
 error = tf.reduce_mean(tf.square(y_pred - y), name='error')
-
 mse = tf.reduce_mean(tf.square(error), name="mse")                                    # not shown
+
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)            # not shown
 training_op = optimizer.minimize(mse)                                                 # not shown
 
@@ -46,26 +52,29 @@ with tf.Session() as sess:
     
     for epoch in range(n_epochs):
         #print("epoch ", epoch)
-        #x_train = sess.run(x_batch)
-        #y_train = sess.run(y_batch)
         x_train = np.random.rand(2,1)
         y_train = x_train * 2 + 3
+        summary_str = mse_summary.eval(feed_dict={x: x_train, y: y_train})
+        file_writer.add_summary(summary_str, epoch)
         #print("x ", x_train, " y ", y_train)
         sess.run(training_op, feed_dict={x: x_train, y: y_train})
         #print("sess.run training_op")
         if epoch % 100 == 0 and epoch != 0:
+            #print("Epoch", epoch, "MSE =", mse.eval(feed_dict={x: x_train, y: y_train})," theta ",theta.eval())# not shown  
             print("Epoch", epoch, "MSE =", mse.eval(feed_dict={x: x_train, y: y_train}))# not shown  
             save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM.ckpt")
         
         #print("boucle")
         
-    #best_theta = theta.eval()
     save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM_final.ckpt")
     print("error ", error)
+    #print("theta ", theta.eval())
+
+file_writer.flush()
+file_writer.close()
 
 with tf.Session() as sess:
     saver.restore(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM_final.ckpt")
-
 
 sess.close()
 
