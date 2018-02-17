@@ -1,7 +1,9 @@
 import tensorflow as tf
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
-n_epochs = 1000                                                                       # not shown in the book
+n_epochs = 2001                                                                       # not shown in the book
 learning_rate = 0.01  
 
 from datetime import datetime
@@ -43,9 +45,15 @@ saver_def = tf.train.Saver().as_saver_def()
 print('Run this operation to initialize variables     : ', init.name)
 print('Run this operation for a train step            : ', y_pred.name)
 
+x_plot = np.zeros( (n_epochs) )
+y_plot = np.zeros( (n_epochs) )
+def fonction_math(x_):
+    y_ = x_ * 3 + 2
+    return y_
+
 with tf.Session() as sess:
     # Write the graph out to a file.
-    tf.train.write_graph(sess.graph_def,'C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/graph/','graph_DoM.pb',False)
+    tf.train.write_graph(sess.graph_def,'C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/graph/','graph_DoM.pb',False)
     sess.run(init)
 
     print("n_epochs ", n_epochs)
@@ -53,7 +61,10 @@ with tf.Session() as sess:
     for epoch in range(n_epochs):
         #print("epoch ", epoch)
         x_train = np.random.rand(1,1)
-        y_train = x_train * 2 + 3
+        #y_train = x_train * x_train * 2 + 3
+        y_train = fonction_math(x_train)
+        x_plot[epoch] = np.array([[x_train]])
+        y_plot[epoch] = np.array([[y_train]])
         summary_str = mse_summary.eval(feed_dict={x: x_train, y: y_train})
         file_writer.add_summary(summary_str, epoch)
         #print("x ", x_train, " y ", y_train)
@@ -62,26 +73,30 @@ with tf.Session() as sess:
         if epoch % 100 == 0 and epoch != 0:
             #print("Epoch", epoch, "MSE =", mse.eval(feed_dict={x: x_train, y: y_train})," theta ",theta.eval())# not shown  
             print("Epoch", epoch, "MSE =", mse.eval(feed_dict={x: x_train, y: y_train}))# not shown  
-            save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM.ckpt")
+            save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/model/model_DoM.ckpt")
         
         #print("boucle")
         
-    save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM_final.ckpt")
+    save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/model/model_DoM_final.ckpt")
     print("error ", error)
     #print("theta ", theta.eval())
     x_test = np.array([[2.1]])
-    print("x_test ", x_test, "y_pred ",y_pred.eval(feed_dict={x: x_test}))
+    y_test = fonction_math(x_test)
+    print("x_test ", x_test, " y_pred ",y_pred.eval(feed_dict={x: x_test}), " y_test ",y_test)
 
 file_writer.flush()
 file_writer.close()
 
 print("TEST")
 with tf.Session() as sess:
-    saver.restore(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/model/model_DoM_final.ckpt")
+    saver.restore(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/model/model_DoM_final.ckpt")
     x_test = np.array([[3.1]])
-    print("x_test ", x_test," y_pred ",y_pred.eval(feed_dict={x: x_test}))
-
+    y_test = fonction_math(x_test)
+    print("x_test ", x_test, " y_pred ",y_pred.eval(feed_dict={x: x_test}), " y_test ",y_test)
 
 sess.close()
 
+plt.plot(x_plot, y_plot, 'r^', label="Negative")
+plt.legend()
+plt.show()
 
