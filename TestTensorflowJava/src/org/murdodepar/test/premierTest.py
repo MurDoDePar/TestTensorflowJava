@@ -3,7 +3,9 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-n_epochs = 2001                                                                       # not shown in the book
+n_epochs = 6001                                                                       # not shown in the book
+nb_sauve = np.around(n_epochs / 10)
+print(nb_sauve)
 learning_rate = 0.01
 
 rep_racine = "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava"
@@ -15,8 +17,8 @@ now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
 root_logdir = "{}/{}/".format(rep_racine, "tf_logs")
 logdir = "{}/DoM-{}/".format(root_logdir, now)
 rep_graph = "{}/{}/".format(rep_racine, "DoM/graph")
-rep_model = "{}/{}/".format(rep_racine, "DoM/model/model_DoM.ckpt")
-rep_model_final = "{}/{}/".format(rep_racine, "DoM/model/model_DoM_final.ckpt")
+rep_model = "{}/{}".format(rep_racine, "DoM/model/model_DoM.ckpt")
+rep_model_final = "{}/{}".format(rep_racine, "DoM/model/model_DoM_final.ckpt")
 
 # Batch of input and target output (1x1 matrices)
 x = tf.placeholder(tf.float32, shape=[None, 1], name='x')
@@ -53,9 +55,20 @@ print('Run this operation for a train step            : ', y_pred.name)
 
 x_plot = np.zeros( (n_epochs) )
 y_plot = np.zeros( (n_epochs) )
+x_bleu = np.zeros( (10) )
+y_bleu = np.zeros( (10) )
+
 def fonction_math(x_):
-    y_ = (x_ * x_ * 3) + 2
+    y_ = (x_ * 3) + 2
     return y_
+
+def fonction_test():
+    x_test = x_train = np.random.rand(1,1)
+    y_test = fonction_math(x_test)
+    y_trouve = y_pred.eval(feed_dict={x: x_test})
+    print("x_test ", x_test, " y_pred ",y_trouve, " y_test ",y_test ," ", (y_trouve-y_test))
+    return x_test, y_trouve
+
 
 with tf.Session() as sess:
     # Write the graph out to a file.
@@ -77,7 +90,7 @@ with tf.Session() as sess:
         #print("x ", x_train, " y ", y_train)
         sess.run(training_op, feed_dict={x: x_train, y: y_train})
         #print("sess.run training_op")
-        if epoch % 100 == 0 and epoch != 0:
+        if epoch % nb_sauve == 0 and epoch != 0:
             #print("Epoch", epoch, "MSE =", mse.eval(feed_dict={x: x_train, y: y_train})," theta ",theta.eval())# not shown  
             print("Epoch", epoch, "MSE =", mse.eval(feed_dict={x: x_train, y: y_train}))# not shown  
             #save_path = saver.save(sess, "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/model/model_DoM.ckpt")
@@ -98,22 +111,15 @@ file_writer.close()
 print("TEST")
 with tf.Session() as sess:
     saver.restore(sess, rep_model_final)
-    x_test = x_train = np.random.rand(1,1)
-    y_test = fonction_math(x_test)
-    print("x_test ", x_test, " y_pred ",y_pred.eval(feed_dict={x: x_test}), " y_test ",y_test)
-    x_test = x_train = np.random.rand(1,1)
-    y_test = fonction_math(x_test)
-    print("x_test ", x_test, " y_pred ",y_pred.eval(feed_dict={x: x_test}), " y_test ",y_test)
-    x_test = x_train = np.random.rand(1,1)
-    y_test = fonction_math(x_test)
-    print("x_test ", x_test, " y_pred ",y_pred.eval(feed_dict={x: x_test}), " y_test ",y_test)
-    x_test = x_train = np.random.rand(1,1)
-    y_test = fonction_math(x_test)
-    print("x_test ", x_test, " y_pred ",y_pred.eval(feed_dict={x: x_test}), " y_test ",y_test)
+    for num_test in range(10):
+        x_bleu[num_test], y_bleu[num_test] = fonction_test()
 
+    plt.plot(x_bleu, y_bleu, 'b^', label="Trouve")
+    
+    
 sess.close()
 
-plt.plot(x_plot, y_plot, 'r^', label="Negative")
+plt.plot(x_plot, y_plot, 'r^', label="Focntion")
 plt.legend()
 plt.show()
 

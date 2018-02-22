@@ -2,6 +2,9 @@ Exemple du livre Oreilly
 Deep Learning avec tensorFlow de Aurelien geron
 https://github.com/ageron/handson-ml
 
+pip3 install --upgrade tensorflow
+pip3 install --upgrade tensorflow-gpu
+
 pip install numpy
 pip install matplotlib
 pip install pandas 
