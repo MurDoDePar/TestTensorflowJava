@@ -1,3 +1,0 @@
-model_checkpoint_path: "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/model/model_DoM_final.ckpt/"
-all_model_checkpoint_paths: "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/model/model_DoM.ckpt/"
-all_model_checkpoint_paths: "C:/Users/domin/Google Drive/Code/git/TestTensorflowJava/TestTensorflowJava/DoM/model/model_DoM_final.ckpt/"
