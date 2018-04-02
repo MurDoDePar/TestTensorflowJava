@@ -10,6 +10,7 @@ http://blog.nitishmutha.com/tensorflow/2017/01/22/TensorFlow-with-gpu-for-window
 		C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64\cudnn.lib
 		C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\extras\CUPTI\libx64
 
+http://www.laurencemoroney.com/installing-tensorflow-with-gpu-on-windows-10/
 
 python -m pip install --upgrade pip
 
@@ -31,6 +32,10 @@ python -m pip install mitmproxy
 pip install Django
 python -m pip install
 
+pip install tf-nightly-gpu
+
 python -c "import tensorflow as tf; print(tf.GIT_VERSION, tf.VERSION)"
 
 C:\Users\domin\AppData\Local\Programs\Python\Python36\Lib\site-packages\tensorflow\python\platform\build_info.py
+
+nvidia-smi
